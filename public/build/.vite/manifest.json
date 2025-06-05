@@ -1,0 +1,63 @@
+{
+  "_Application-C_cqPbP4.js": {
+    "file": "assets/Application-C_cqPbP4.js",
+    "name": "Application",
+    "imports": [
+      "resources/js/app.tsx"
+    ]
+  },
+  "resources/js/Pages/Configuration.tsx": {
+    "file": "assets/Configuration-_RodUHh5.js",
+    "name": "Configuration",
+    "src": "resources/js/Pages/Configuration.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.tsx",
+      "_Application-C_cqPbP4.js"
+    ]
+  },
+  "resources/js/Pages/Dashboard.tsx": {
+    "file": "assets/Dashboard-DKvNOqns.js",
+    "name": "Dashboard",
+    "src": "resources/js/Pages/Dashboard.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.tsx",
+      "_Application-C_cqPbP4.js"
+    ]
+  },
+  "resources/js/Pages/History.tsx": {
+    "file": "assets/History-hum7pEh2.js",
+    "name": "History",
+    "src": "resources/js/Pages/History.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.tsx",
+      "_Application-C_cqPbP4.js"
+    ]
+  },
+  "resources/js/Pages/Index.tsx": {
+    "file": "assets/Index-Cr4uENcM.js",
+    "name": "Index",
+    "src": "resources/js/Pages/Index.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.tsx"
+    ]
+  },
+  "resources/js/app.tsx": {
+    "file": "assets/app-sEU_XmFv.js",
+    "name": "app",
+    "src": "resources/js/app.tsx",
+    "isEntry": true,
+    "dynamicImports": [
+      "resources/js/Pages/Configuration.tsx",
+      "resources/js/Pages/Dashboard.tsx",
+      "resources/js/Pages/History.tsx",
+      "resources/js/Pages/Index.tsx"
+    ],
+    "css": [
+      "assets/app-Cao9qabz.css"
+    ]
+  }
+}
