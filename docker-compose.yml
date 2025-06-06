@@ -10,8 +10,18 @@ services:
       - .:/app
     env_file:
       - .env
-    environment:
-      APP_DEBUG: false
+  environment:
+    APP_DEBUG: "true"
+    APP_HOST: "0.0.0.0"
+    APP_PORT: "8000"
+    VITE_HOST: "127.0.0.1"
+    DB_NAME: "water_monitor"
+    DB_PORT: "3306"
+    DB_HOST: mysql
+    DB_USER: "root"
+    DB_PASS: ""
+    BOT_TOKEN: ""
+    BOT_USERNAME: "esp_water12_bot"
     depends_on:
       - mysql
   mysql:

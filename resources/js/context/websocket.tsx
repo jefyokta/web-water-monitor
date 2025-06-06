@@ -5,7 +5,6 @@ import React, {
   useState,
   type Dispatch,
   type SetStateAction,
-  useMemo,
 } from "react";
 
 export interface IWebSocketContext<T> {
