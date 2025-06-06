@@ -18,23 +18,30 @@ class Telegram
 
     private static $telehost = "api.telegram.org";
 
-    private static $commands = ["/ph", "/ultrasonic", "/temperature", "/tds"];
+    private static $commands = [
+        "/ph",
+        "/ultrasonic",
+        "/temperature",
+        "/tds"
+    ];
 
     public static function store(Request $request, Response $response)
     {
 
-        $url = $request->post("url") ?? false;
+        $url = $request->json("url") ?? false;
         if ($url) {
             $client = new Client(self::$telehost, 443, true);
-            $data = ["url" => $url];
+            $data = ["url" => $url . "/telegram"];
             $client->setHeaders(["content-type" => "application/json"]);
-            $res = $client->post("/bot{$_ENV['BOT_TOKEN']}/setWebhook", json_encode($data));
+            $token = $_ENV['BOT_TOKEN'];
+            $res = $client->post("/bot$token/setWebhook", json_encode($data));
             if ($client->errCode == 0) {
                 $client->close();
-                $response->json(new ResponseJson([], "ok", false));
+                Preference::set("teleHost", $url);
+                $response->json(new ResponseJson(["url" => $url], "ok", false));
             } else {
                 $client->close();
-                $response->end(500);
+                $response->header('content-type', 'application/json')->status(500)->end(json_encode(["message" => "opps something wrong", "error" => true]));
             }
         } else {
             $response->status(400)->json(new ResponseJson([], "url field is required!", true));
@@ -49,16 +56,24 @@ class Telegram
 
     public static function getWebhook($_, Response $response)
     {
-        if (!Preference::has("teleHost")) {
+        if (!Preference::has("teleHost") || Preference::get("teleHost") == "") {
             $client = new Client(self::$telehost, 443, true);
-            $token =$_ENV['BOT_TOKEN'];
+            $token = $_ENV['BOT_TOKEN'];
             $client->get("/bot$token/getWebhookInfo");
-            $response->header("content-type", "application/json")->end($client->getBody());
+            $body = json_decode($client->getBody()) ?? "";
+            $url = $body?->result?->url;
+            if (!empty($url)) {
+                $host = parse_url($url, PHP_URL_HOST) ?? '';
+                Preference::set("teleHost", $host);
+            }
+            $client->close();
         }
+        $response
+            ->header("content-type", "application/json")
+            ->end(json_encode(["host" => Preference::get("teleHost")]));
     }
     public static function chat(Request $request, Response $response)
     {
-
         $message = $request->json("message");
         $chatId = $message['chat']["id"];
         $chat = $message["text"];
@@ -113,9 +128,9 @@ class Telegram
 
     public static function assert($message, $data)
     {
-        $res = "";
+        $res = "unknown command `$message`\n available command \n" . implode("\n", self::$commands);
         if (empty($data)) {
-            return "esp never give $message data";
+            return "esp never give any data";
         }
         switch ($message) {
             case self::$commands[0]:

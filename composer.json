@@ -1,7 +1,8 @@
 {
     "require": {
-        "jefyokta/oktaax": "^3.5",
-        "vlucas/phpdotenv": "^5.6"
+        "jefyokta/oktaax": "^3.7",
+        "vlucas/phpdotenv": "^5.6",
+        "illuminate/database": "^12.17"
     },
      "autoload":{
         "psr-4":{

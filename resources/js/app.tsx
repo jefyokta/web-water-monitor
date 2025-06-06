@@ -22,10 +22,22 @@ if (import.meta.hot) {
 createInertiaApp({
     resolve: name => import(`./Pages/${name}.tsx`),
     setup({ el, App, props }) {
-        createRoot(el).render(
-            <App {...props} />
 
-        );
+        (async () => {
+            const { WebSocketProvider } = await import("@/context/websocket")
+
+            const { Toaster } = await import("@/components/ui/sonner")
+            const { hostname, port, protocol } = window.location
+            const proto = protocol == "https:" ? "wss" : "ws"
+            const url = `${proto}://${hostname}:${port}`
+            createRoot(el).render(
+                <WebSocketProvider url={url}>
+                    <App {...props} />
+                    <Toaster />
+                </WebSocketProvider>
+
+            );
+        })()
 
     },
 })

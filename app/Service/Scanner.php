@@ -29,7 +29,7 @@ class Scanner
                 echo " - $ip";
                 if ($this->isEsp($ip)) {
                     echo " <- esp";
-                    Coroutine::writeFile(__DIR__ . "/../../storage/esp", $ip);
+                    Preference::set("espHost", $ip);
                 };
                 echo PHP_EOL;
             }

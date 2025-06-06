@@ -90,7 +90,7 @@ export const RealTimeChart: React.FC<RealtimeProps> = ({ title, desc, className,
               </linearGradient>
             </defs>
             <Area
-              dataKey={dataKey || "value"}
+              dataKey={"value"}
               type="natural"
               fill="url(#fillMobile)"
               fillOpacity={0.4}

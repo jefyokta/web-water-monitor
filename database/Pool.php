@@ -29,7 +29,7 @@ class Pool
             }, $maxConn);
         } catch (\Throwable $th) {
             throw $th;
-            // exit(1);
+            exit(1);
         }
     }
 

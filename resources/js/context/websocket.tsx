@@ -13,10 +13,13 @@ export interface IWebSocketContext<T> {
   sendMessage: (msg: string) => void;
   lastMessage: T | null;
   setLastMessage: Dispatch<SetStateAction<T | null>>;
-  socket: WebSocket | null
+  socket: WebSocket | null,
+  espConnected: boolean,
+  setEspConnected: Dispatch<SetStateAction<boolean>>,
+
 }
 
-export const WebSocketContext = createContext<IWebSocketContext<any>>(null!);
+export const WebSocketContext = createContext<IWebSocketContext<any>>(null);
 
 interface Props {
   url: string;
@@ -25,17 +28,21 @@ interface Props {
 
 export function WebSocketProvider<T = unknown>({ url, children }: Props) {
   const socketRef = useRef<WebSocket | null>(null);
+
   const [connected, setConnected] = useState(false);
   const [lastMessage, setLastMessage] = useState<T | null>(null);
+  const [espConnected, setEspConnected] = useState(false)
+
 
   useEffect(() => {
-    const socket = new WebSocket(url);
+    const socket= new WebSocket(url);
     socketRef.current = socket;
 
     socket.onopen = () => {
       setConnected(true);
-      socket.send(JSON.stringify({ event: "status" }));
+      socket.send(JSON.stringify({ event: "esp_status" }));
       console.log("WebSocket connected");
+
     };
 
     socket.onclose = () => {
@@ -65,7 +72,9 @@ export function WebSocketProvider<T = unknown>({ url, children }: Props) {
       sendMessage,
       setLastMessage,
       connected,
-      socket: socketRef.current
+      socket:socketRef.current,
+      espConnected,
+      setEspConnected
     }}>
       {children}
     </WebSocketContext.Provider>

@@ -1,5 +1,6 @@
 interface DashboardProps extends PageProps{
-    botUsername:string
+    botUsername:string,
+    espIp:string|false
     [key: string]: unknown; 
 }
 
@@ -8,8 +9,11 @@ interface DefaultMessage {
     message:any
 }
 
+interface SensorMessage  extends DefaultMessage{
+    message?:SensorData
+}
 
-interface SensorMessage {
+interface SensorData {
     ph:number,
     distance:number,
     tds:number,

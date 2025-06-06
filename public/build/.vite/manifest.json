@@ -1,43 +1,46 @@
 {
-  "_Application-C_cqPbP4.js": {
-    "file": "assets/Application-C_cqPbP4.js",
+  "_Application-DjGnAczG.js": {
+    "file": "assets/Application-DjGnAczG.js",
     "name": "Application",
+    "imports": [
+      "resources/js/app.tsx",
+      "resources/js/context/websocket.tsx",
+      "_index-DkD_WCRZ.js"
+    ]
+  },
+  "_index-DkD_WCRZ.js": {
+    "file": "assets/index-DkD_WCRZ.js",
+    "name": "index",
     "imports": [
       "resources/js/app.tsx"
     ]
   },
-  "resources/js/Pages/Configuration.tsx": {
-    "file": "assets/Configuration-_RodUHh5.js",
-    "name": "Configuration",
-    "src": "resources/js/Pages/Configuration.tsx",
-    "isDynamicEntry": true,
-    "imports": [
-      "resources/js/app.tsx",
-      "_Application-C_cqPbP4.js"
-    ]
-  },
   "resources/js/Pages/Dashboard.tsx": {
-    "file": "assets/Dashboard-DKvNOqns.js",
+    "file": "assets/Dashboard-DAHo41uD.js",
     "name": "Dashboard",
     "src": "resources/js/Pages/Dashboard.tsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.tsx",
-      "_Application-C_cqPbP4.js"
+      "_Application-DjGnAczG.js",
+      "_index-DkD_WCRZ.js",
+      "resources/js/context/websocket.tsx"
     ]
   },
   "resources/js/Pages/History.tsx": {
-    "file": "assets/History-hum7pEh2.js",
+    "file": "assets/History-BEtYM7SG.js",
     "name": "History",
     "src": "resources/js/Pages/History.tsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.tsx",
-      "_Application-C_cqPbP4.js"
+      "_Application-DjGnAczG.js",
+      "resources/js/context/websocket.tsx",
+      "_index-DkD_WCRZ.js"
     ]
   },
   "resources/js/Pages/Index.tsx": {
-    "file": "assets/Index-Cr4uENcM.js",
+    "file": "assets/Index-C0oyZ-vf.js",
     "name": "Index",
     "src": "resources/js/Pages/Index.tsx",
     "isDynamicEntry": true,
@@ -46,18 +49,38 @@
     ]
   },
   "resources/js/app.tsx": {
-    "file": "assets/app-sEU_XmFv.js",
+    "file": "assets/app-BvkM8-F6.js",
     "name": "app",
     "src": "resources/js/app.tsx",
     "isEntry": true,
     "dynamicImports": [
-      "resources/js/Pages/Configuration.tsx",
       "resources/js/Pages/Dashboard.tsx",
       "resources/js/Pages/History.tsx",
-      "resources/js/Pages/Index.tsx"
+      "resources/js/Pages/Index.tsx",
+      "resources/js/context/websocket.tsx",
+      "resources/js/components/ui/sonner.tsx"
     ],
     "css": [
-      "assets/app-Cao9qabz.css"
+      "assets/app-C7wO_d_z.css"
+    ]
+  },
+  "resources/js/components/ui/sonner.tsx": {
+    "file": "assets/sonner-Wz_8NuJk.js",
+    "name": "sonner",
+    "src": "resources/js/components/ui/sonner.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.tsx",
+      "_index-DkD_WCRZ.js"
+    ]
+  },
+  "resources/js/context/websocket.tsx": {
+    "file": "assets/websocket-D1zdDFaT.js",
+    "name": "websocket",
+    "src": "resources/js/context/websocket.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.tsx"
     ]
   }
 }

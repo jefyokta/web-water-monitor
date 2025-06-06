@@ -1,3 +1,5 @@
+import { WebSocketProvider } from "@/context/websocket"
+import { Slave } from "@/hooks/slave"
 import { Head, Link } from "@inertiajs/react"
 import type { PropsWithChildren } from "react"
 
@@ -15,9 +17,10 @@ export const Application: React.FC<PropsWithChildren> = ({ children }) => {
                 </div>
             </nav>
             <main className="space-y-5">
-                {children}
+                    {children}
             </main>
 
         </div>
+        <Slave />
     </>
 }

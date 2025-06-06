@@ -5,11 +5,7 @@ use Swoole\Coroutine\Http\Client;
 
 use function Swoole\Coroutine\run;
 
-run(function () {
-    $client = new Client("api.telegram.org",443,true);
-    $client->get("/botSecretToken/getWebhookInfo");
-    echo $client->getBody();
-});
+require_once __DIR__."/vendor/autoload.php";
+require_once __DIR__."/config/app.php";
 
-
-echo "out of co\n";
+echo $_ENV["APP_HOST"];

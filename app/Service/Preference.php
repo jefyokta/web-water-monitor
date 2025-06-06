@@ -16,11 +16,10 @@ class Preference
             return;
         }
 
-        $table = new Table(4096); 
+        $table = new Table(1024); 
         $table->column("name", Table::TYPE_STRING, 64);  
         $table->column("value", Table::TYPE_STRING, 256); 
         $table->create();
-
         self::$table = $table;
     }
 
