@@ -53,7 +53,10 @@ const History = () => {
 
     return (
         <Application>
-            <div className="space-y-4 flex flex-col relative">
+            <div className="space-y-4 flex flex-col relative bg-sky-50 p-5  rounded-4xl">
+                <h3 className="my-5 text-xl font-semibold">History</h3>
+                <span className="text-zinc-600 text-sm">Sensors data that given by esp32 all time</span>
+
                 <Table className="table-fixed w-full flex-1">
                     <TableHeader>
                         <TableRow className="capitalize">

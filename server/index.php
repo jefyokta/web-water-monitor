@@ -9,19 +9,16 @@ use App\Controller\Telegram;
 use App\Database\Pool;
 use App\Middleware\ContentType;
 use App\Service\Preference;
-use Oktaax\Http\Inertia;
-use Oktaax\Http\Middleware\Csrf;
-use Oktaax\Http\Request;
-use Oktaax\Http\Response;
-use Oktaax\Http\ResponseJson;
+use Oktaax\Http\Support\Validation;
 use Oktaax\Oktaax;
 use Oktaax\Trait\HasWebsocket;
 use Oktaax\Views\PhpView;
 use Oktaax\Websocket\Support\Table as SupportTable;
-use Swoole\Coroutine;
-use Swoole\Coroutine\Http\Client;
+
 use Swoole\Server\Task;
 use Swoole\Table;
+use App\Channel\Esp;
+use Oktaax\Console;
 
 $app =  new class extends Oktaax {
     use HasWebsocket;
@@ -49,7 +46,7 @@ $app->on("Task", function ($server, Task $task) {
     try {
         $data = $task->data["payload"];
         if ($task->data["action"] === "insert") {
-            $stmt = $pdo->prepare("INSERT INTO history (ph, deep, temp, tds, updated_at) VALUES (?, ?, ?, ?, NOW())");
+            $stmt = $pdo->prepare("INSERT INTO history (ph, deep, temp, tds) VALUES (?, ?, ?, ?)");
             $stmt->execute([
                 $data['ph'],
                 $data['deep'],
@@ -58,8 +55,8 @@ $app->on("Task", function ($server, Task $task) {
             ]);
         } elseif ($task->data["action"] === "update") {
             $pdo->prepare("
-            INSERT INTO tmp (id, ph, deep, temp, tds)
-            VALUES (1, ?, ?, ?, ?)
+            INSERT INTO tmp (id, ph, deep, temp, tds,updated_at)
+            VALUES (1, ?, ?, ?, ?,NOW())
             ON DUPLICATE KEY UPDATE
                 ph = VALUES(ph),
                 deep = VALUES(deep),
@@ -68,7 +65,8 @@ $app->on("Task", function ($server, Task $task) {
                 $data['ph'],
                 $data['deep'],
                 $data['temp'],
-                $data['tds']
+                $data['tds'],
+
             ]);
         }
     } catch (\Throwable $e) {
@@ -132,8 +130,6 @@ $app->ws("esp_status", function ($serv, $client) {
 
 $app->ws("ip", function ($serv, $client) {
     if (SupportTable::get($client->fd)) {
-        // $data =json_decode($client->data)
-        // echo  json_encode($client->data);
         Preference::set("espHost", $client->data['message']['ip']);
         Preference::set("kVal", $client->data["message"]['tds_cal']);
         Preference::set("calibration", $client->data["message"]['ph_cal']);
@@ -143,6 +139,59 @@ $app->ws("ip", function ($serv, $client) {
                 "event" => "esp_status",
                 "message" => ["esp_host" => $client->data['message']["ip"], "status" => true]
             ]));
+    }
+});
+
+$app->ws("calibration", function ($serv, $client) {
+
+    $data = $client->data["message"];
+    $val = new Validation;
+    $err = $val->validate($data, ["calibration" => "required", "distance" => "required", "password" => "required"]);
+    $pdo = Pool::get();
+    try {
+        $s = $pdo->query("SELECT * FROM users WHERE username = 'super_user'");
+        $res = $s->fetch(PDO::FETCH_ASSOC);
+        if (!password_verify(isset($data['password']) ? $data["password"] : "dasd", $res['password'])) {
+            $serv->reply(json_encode(['event' => "error", "message" => 'unauthorized']));
+        } else {
+            if (!empty($err)) {
+                $serv->reply(['event' => "error", "message" => "incomplete request"]);
+            } else {
+                $serv->reply(["event" => "info", "message" => "Changing pH & distance configuration.."]);
+                $serv->toChannel(Esp::class)->broadcast(["event" => "conf", "message" => ['calibration' => $data['calibration'], "distance" => $data['distance']]]);
+            }
+        }
+    } catch (\Throwable $th) {
+        throw $th;
+    } finally {
+        Pool::put($pdo);
+    }
+});
+
+$app->ws("config", function ($serv, $client) {
+    $data = $client->data["message"];
+    $val = new Validation;
+
+    $err = $val->validate($data, ["kValue" => "required|numeric", "kTemp" => "numeric", "password" => "required"]);
+    $pdo = Pool::get();
+    try {
+        $s = $pdo->query("SELECT * FROM users WHERE username = 'super_user' ");
+        $res = $s->fetch(PDO::FETCH_ASSOC);
+        if (!password_verify(isset($data['password']) ? $data["password"] : "dasd", $res['password'])) {
+            $serv->reply(json_encode(['event' => "error", "message" => 'unauthorized']));
+        } else {
+            if (!empty($err)) {
+                $serv->reply(['event' => "error", "message" => "incomplete request"]);
+            } else {
+                $serv->reply(["event" => "info", "message" => "Changing tds configuration.."]);
+
+                $serv->toChannel(Esp::class)->broadcast(["event" => "conf", "message" => ['kVal' => $data['kValue'], "kTemp" => $data['kTemp']]]);
+            }
+        }
+    } catch (\Throwable $th) {
+        throw $th;
+    } finally {
+        Pool::put($pdo);
     }
 });
 

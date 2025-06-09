@@ -38,7 +38,7 @@ class Telegram
             if ($client->errCode == 0) {
                 $client->close();
                 Preference::set("teleHost", $url);
-                $response->json(new ResponseJson(["url" => $url], "ok", false));
+                $response->json(new ResponseJson(["host" => $url], "ok", false));
             } else {
                 $client->close();
                 $response->header('content-type', 'application/json')->status(500)->end(json_encode(["message" => "opps something wrong", "error" => true]));
@@ -78,8 +78,6 @@ class Telegram
         $chatId = $message['chat']["id"];
         $chat = $message["text"];
 
-
-        Coroutine::writeFile("storage/log", json_encode($request, JSON_PRETTY_PRINT));
         go(function () use ($chatId, $chat) {
             $token = $_ENV['BOT_TOKEN'];
             $host = self::$telehost;
@@ -117,7 +115,7 @@ class Telegram
             $data = $stmt->fetch(\PDO::FETCH_ASSOC);
             $pdo->commit();
 
-            return self::assert($msg, $data) ?? "";
+            return self::assert($msg, $data) . "\nlast update: {$data['updated_at']}" ?? "";
         } catch (\Throwable $th) {
             $pdo->rollBack();
             return "Sorry, server is broken";

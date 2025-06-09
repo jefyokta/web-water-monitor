@@ -33,7 +33,14 @@ export const Slave = () => {
                     break
                 case "publish":
                     setLastMessage(msg.message as SensorMessage)
-                    break
+                    break;
+                case "error":
+                
+                    toast.error(msg.message as string)
+                    break;
+                case "info":
+                    toast.info(msg.message as string);
+                    break;
                 default:
                     break;
             }

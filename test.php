@@ -1,4 +1,4 @@
 <?php
 
-echo class_exists("Swoole\Database\PDOPool");
 
+echo strcmp("jepi","jefid");

@@ -110,7 +110,12 @@ export const OverviewSection = () => {
                             </span>
                         </div>
                     </div>
-                    <Esp32Config espdata={espData} setEspData={setEspData} />
+                    <Link href={'/configuration'} className="bg-zinc-900 col-span-1 cursor-pointer flex flex-col items-center justify-center gap-1.5 rounded-3xl w-full p-5">
+
+                        <div className="rounded-full w-2 h-2 bg-white"></div>
+                        <div className="rounded-full w-2 h-2 bg-white"></div>
+                        <div className="rounded-full w-2 h-2 bg-white"></div>
+                    </Link>
                 </div>
             </div>
             <SecondItem />
@@ -164,120 +169,6 @@ export const OverviewSection = () => {
 }
 
 
-const Esp32Config = ({ espdata, setEspData }: { espdata: { calibration: number, distance: number }, setEspData: Dispatch<SetStateAction<{ calibration: number; distance: number; }>> }) => {
-    const [data, setData] = useState<{ calibration: number; distance: number, password: string }>({
-        calibration: espdata.calibration,
-        distance: espdata.distance,
-        password: ""
-    });
-    const [loading, setLoading] = useState<boolean>(false)
-
-    const submit = async () => {
-        setLoading(true)
-        const result = await fetch("/esp", {
-            method: "POST",
-            body: JSON.stringify(data),
-            headers: {
-                "content-type": "application/json"
-            }
-        });
-        if (result.ok) {
-            setEspData({ calibration: data.calibration, distance: data.distance })
-            toast("Configuration Changed")
-        } else {
-
-            const json = await result.json()
-            toast.error(json.message)
-        }
-        setLoading(false)
-    }
-
-    return (
-        <Dialog>
-            <DropdownMenu>
-                <DropdownMenuTrigger className="bg-zinc-900 col-span-1 cursor-pointer flex items-center justify-center space-y-1 rounded-3xl w-full p-5">
-                    <More className="w-full text-white" />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                    <DialogTrigger asChild>
-                        <DropdownMenuItem className="cursor-pointer border-0 w-full">
-                            Distance & PH
-                        </DropdownMenuItem>
-                    </DialogTrigger>
-                </DropdownMenuContent>
-            </DropdownMenu>
-
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle>ESP32 Configuration</DialogTitle>
-                    <DialogDescription>
-                        Set configuration of ESP32 for reading sensor data.
-                    </DialogDescription>
-                </DialogHeader>
-
-                <div className="flex items-center gap-2">
-                    <div className="grid flex-1 gap-2">
-                        <label htmlFor="calibration">Calibration</label>
-                        <input
-                            type="number"
-                            id="calibration"
-                            value={data.calibration}
-                            onChange={(e) =>
-                                setData({ ...data, calibration: parseFloat(e.target.value) })
-                            }
-                            className="border border-slate-200 rounded-md p-1"
-                        />
-                    </div>
-                </div>
-
-                <div className="flex items-center gap-2">
-                    <div className="grid flex-1 gap-2">
-                        <label htmlFor="distance">
-                            Base to Ultrasonic Sensor Distance
-                        </label>
-                        <input
-                            type="number"
-                            id="distance"
-                            value={data.distance}
-                            onChange={(e) =>
-                                setData({ ...data, distance: parseFloat(e.target.value) })
-                            }
-                            className="border border-slate-200 rounded-md p-1"
-                        />
-                    </div>
-                </div>
-
-                <div className="flex items-center gap-2">
-                    <div className="grid flex-1 gap-2">
-                        <label htmlFor="password">Password</label>
-                        <input
-                            type="password"
-                            id="password"
-                            className="border border-slate-200 rounded-md p-1"
-                            value={data.password}
-                            onChange={(e) => setData({ ...data, password: e.target.value })}
-                        />
-                    </div>
-                </div>
-
-                <div className="flex items-center gap-2">
-                    <div className="grid flex-1 gap-2">
-                        <button
-                            disabled={loading}
-                            className="w-full rounded-md bg-zinc-800 text-white p-1 cursor-pointer"
-                            onClick={async () => await submit()}
-                            type="button"
-                        >
-                            Submit
-                        </button>
-                    </div>
-                </div>
-            </DialogContent>
-        </Dialog>
-    );
-};
-
-
 
 
 const SecondItem = () => {
@@ -286,12 +177,23 @@ const SecondItem = () => {
 
     useEffect(() => {
         fetch("/telegram/bot/webhook")
-            .then(r => r.json())
+            .then(r => {
+                if (r.status == 200) {
+
+                    return r.json()
+                } else {
+                    toast.error("Failed to sync host");
+                    return r.json()
+                }
+            }
+            )
             .then(rs => {
                 setCurrentHost(rs.host || null);
-                console.log(rs);
+                // console.log(rs);
             })
-            .catch(console.error);
+            .catch(e => {
+                console.error(e);
+            });
     }, []);
     const actualDomain = window.location.origin
 
@@ -310,9 +212,12 @@ const SecondItem = () => {
             })
             .then(rs => {
                 console.log(rs)
-                if (rs.host) {
+                if (rs.data.host) {
+                    toast.success("Synced")
                     setCurrentHost(actualDomain);
+                    return
                 }
+                toast.error("Failed to sync host");
             })
             .catch(console.error);
     };
