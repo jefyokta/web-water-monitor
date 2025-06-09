@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Database\Pool;
 use App\Service\Preference;
 use Exception;
+use Oktaax\Http\Inertia;
 use Oktaax\Http\Request;
 use Oktaax\Http\Response;
 use Oktaax\Http\ResponseJson;
@@ -61,5 +62,48 @@ class Esp32
         } finally {
             Pool::put($conn);
         }
+    }
+
+
+    public static function tds(Request $req, Response $res)
+    {
+
+        $val = $req->validate(["kValue" => "required|numeric", "kTemp" => "numeric", "password" => "required"], $req->bodies());
+        $data = $val->getData();
+        $err = $val->getError();
+        if (!empty($err)) {
+            return $res->status(400)->json(new ResponseJson([], $err, true));
+        } else {
+            $espHost = Preference::get("espHost") ?? false;
+            if (!$espHost) {
+                return $res->status(500)->json(new ResponseJson([], "ESP is out of network", true));
+            } else {
+
+                try {
+                    $client = new Client($espHost);
+                    $client->post("/", $data);
+                    if ($client->statusCode == 200) {
+                        return $res->status(200)->json(new ResponseJson([], "ok", null));
+                    } else {
+                        $res->status($client->statusCode)->json(new ResponseJson([], $client->body, true));
+                    }
+                } catch (\Throwable $th) {
+                    return $res->status(500)->json(new ResponseJson([], "ESP is out of network", true));
+                }
+            }
+        }
+    }
+
+    public static function conf()
+    {
+        $tds = Preference::get("kVal") ?? 0;
+        $ph = Preference::get("calibration") ?? 0;
+        $dis = Preference::get("distance") ?? 0;
+
+        return Inertia::render("Configuration", [
+            "kVal" => $tds,
+            "calibration" => $ph,
+            "distance" => $dis
+        ]);
     }
 };

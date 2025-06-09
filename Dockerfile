@@ -22,8 +22,10 @@ COPY . .
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# RUN composer install
+RUN composer install
 
 RUN npm install && npm run build
+
+RUN php database/Factory.php
 
 CMD ["php", "do"]

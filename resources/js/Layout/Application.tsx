@@ -14,10 +14,12 @@ export const Application: React.FC<PropsWithChildren> = ({ children }) => {
                 <div className="flex space-x-5">
                     <Link href={"/dashboard"} className="text-sm text-neutral-600 cursor-pointer hover:underline">Dashboard</Link>
                     <Link href={"/history"} className="text-sm text-neutral-600 cursor-pointer hover:underline">History</Link>
+                    <Link href={"/configuration"} className="text-sm text-neutral-600 cursor-pointer hover:underline">Configuration</Link>
+
                 </div>
             </nav>
             <main className="space-y-5">
-                    {children}
+                {children}
             </main>
 
         </div>

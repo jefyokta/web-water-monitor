@@ -9,18 +9,18 @@ require_once __DIR__ . "/NormalConnection.php";
 Capsule::schema()->create('tmp', function (Blueprint $table) {
     $table->increments('id');
     $table->float('ph');
-    $table->float('temperature');
+    $table->float('temp');
     $table->float('tds');
-    $table->float('distance');
+    $table->float('deep');
     $table->timestamps();
 });
 
 Capsule::schema()->create('history', function (Blueprint $table) {
     $table->increments('id');
     $table->float('ph');
-    $table->float('temperature');
+    $table->float('temp');
     $table->float('tds');
-    $table->float('distance');
+    $table->float('deep');
     $table->timestamp('created_at')->useCurrent();
 });;
 

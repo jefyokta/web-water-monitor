@@ -30,7 +30,7 @@ export default defineConfig(({ mode }) => {
       cors:{
         origin:"*"
       },
-      hmr: true,
+      hmr:false,
     },
   }
 })

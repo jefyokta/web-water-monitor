@@ -14,7 +14,7 @@ run(function () {
             "message" => [
                 "ph" => rand(0, 14),
                 "tds" => rand(0, 1000),
-                "distance" => rand(0, 100),
+                "deep" => rand(0, 100),
                 "temp" => rand(0, 100)
             ]
         ]));

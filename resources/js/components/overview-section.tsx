@@ -16,7 +16,7 @@ import type { DataPoint } from "./chart"
 export const OverviewSection = () => {
     const { espIp } = usePage<DashboardProps>().props
     const [espData, setEspData] = useState<{ calibration: number, distance: number }>({ calibration: 21, distance: 21.0 })
-    const { connected, lastMessage ,espConnected } = useWebSocket<SensorMessage | null>()
+    const { connected, lastMessage, espConnected } = useWebSocket<SensorMessage | null>()
     const [dis, setDis] = useState<DataPoint[]>([{ value: 0, time: "now" }])
     const [temp, setTemp] = useState<DataPoint[]>([{ value: 0, time: "now" }])
     const [ph, setPh] = useState<DataPoint[]>([{ value: 0, time: "now" }])
@@ -25,7 +25,7 @@ export const OverviewSection = () => {
         if (!lastMessage?.message) return
 
         setDis((prev) => {
-            const updated = [...prev.slice(-10), { value: lastMessage.message.distance, time: 'now' }];
+            const updated = [...prev.slice(-10), { value: lastMessage.message.deep, time: 'now' }];
             const res = updated.map((item, index, arr) => ({
                 ...item,
                 time: index === arr.length - 1 ? 'now' : `${(arr.length - 1 - index) * 2}s ago`
@@ -58,7 +58,7 @@ export const OverviewSection = () => {
             }));
         });
 
-        console.log(ph, )
+        console.log(ph,)
 
 
     }, [lastMessage])
@@ -75,7 +75,7 @@ export const OverviewSection = () => {
                         </h3>
                     </div>
                     <div className="flex w-full space-x-5">
-                        <Bubble name="Esp32" status={espConnected ? "Connected" :"Disconnected"} Icon={<WebsocketIcon className="w-full h-full" />} />
+                        <Bubble name="Esp32" status={espConnected ? "Connected" : "Disconnected"} Icon={<WebsocketIcon className="w-full h-full" />} />
                         <Bubble name="Websocket" status={connected ? "Connected" : "Disconnected"} Icon={<WebsocketIcon className="w-full h-full" />} />
 
                     </div>
@@ -150,8 +150,8 @@ export const OverviewSection = () => {
 
         <ChartSection
             data={dis}
-            title="Distance"
-            desc="Distance sensors in catfish ponds are commonly used to measure water level or detect the presence of objects near feeders or drains. Monitoring water level helps prevent overflows and ensures consistent pond depth, which is important for fish comfort and effective oxygen distribution throughout the pond."
+            title="Deep"
+            desc="Deep sensors in catfish ponds are commonly used to measure water level or detect the presence of objects near feeders or drains. Monitoring water level helps prevent overflows and ensures consistent pond depth, which is important for fish comfort and effective oxygen distribution throughout the pond."
         />
 
         <ChartSection
@@ -201,7 +201,7 @@ const Esp32Config = ({ espdata, setEspData }: { espdata: { calibration: number, 
                 <DropdownMenuContent>
                     <DialogTrigger asChild>
                         <DropdownMenuItem className="cursor-pointer border-0 w-full">
-                            Settings
+                            Distance & PH
                         </DropdownMenuItem>
                     </DialogTrigger>
                 </DropdownMenuContent>
