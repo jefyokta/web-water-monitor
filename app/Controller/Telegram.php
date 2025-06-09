@@ -107,7 +107,7 @@ class Telegram
     private static function getResponse(string $msg): string
     {
         if (!in_array($msg, self::$commands)) {
-            return "invalid command";
+            return "invalid command use /ph /ultrasonic /temperature or /tds";
         }
 
         $pdo = Pool::get();
@@ -117,7 +117,7 @@ class Telegram
             $data = $stmt->fetch(\PDO::FETCH_ASSOC);
             $pdo->commit();
 
-            return self::assert($msg, $data) . " ,last_update:" . $data["last_update"] ?? "";
+            return self::assert($msg, $data) ?? "";
         } catch (\Throwable $th) {
             $pdo->rollBack();
             return "Sorry, server is broken";
@@ -137,7 +137,7 @@ class Telegram
                 $res = $data["ph"] ?? "";
                 break;
             case self::$commands[1]:
-                $res = $data["ultra"] ?? "";
+                $res = $data["deep"] ?? "";
                 break;
             case self::$commands[2]:
                 $res = $data["temp"] ?? "";

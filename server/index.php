@@ -49,7 +49,7 @@ $app->on("Task", function ($server, Task $task) {
     try {
         $data = $task->data["payload"];
         if ($task->data["action"] === "insert") {
-            $stmt = $pdo->prepare("INSERT INTO history (ph, deep, temp, tds) VALUES (?, ?, ?, ?)");
+            $stmt = $pdo->prepare("INSERT INTO history (ph, deep, temp, tds, updated_at) VALUES (?, ?, ?, ?, NOW())");
             $stmt->execute([
                 $data['ph'],
                 $data['deep'],
