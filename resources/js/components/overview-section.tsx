@@ -348,7 +348,7 @@ const SecondItem = () => {
             </div>
         </div>
         <div className="w-full bg-[#cce5e4] rounded-4xl  flex flex-col justify-between  h-1/3 p-5">
-            <h3 className="text-xl">Telegram Bot info</h3>
+            <h3 className="text-xl">Telegram Bot Info</h3>
             <p>@{botUsername}</p>
             <div className="flex w-full justify-end">
                 <a href={`https://t.me/${botUsername}`} className=" p-2 px-4 bg-[#b3cdfe] rounded-3xl" target="_blank" >Chat</a>
