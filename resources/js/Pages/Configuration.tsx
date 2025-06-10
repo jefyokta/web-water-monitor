@@ -32,7 +32,7 @@ const Configuration = () => {
 
     return <Application>
         <section className="">
-            <h3 className="my-5 text-xl font-semibold">Esp32 Sensors Configuration</h3>
+            <h3 className="my-5 text-xl font-semibold">ESP32 Sensors Configuration</h3>
             <div className="flex gap-5">
 
                 <div className="bg-sky-50 flex flex-col flex-1 rounded-4xl p-5 space-y-5 ">
