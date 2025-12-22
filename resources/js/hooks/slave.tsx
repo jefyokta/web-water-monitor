@@ -13,7 +13,7 @@ const toaster = {
 }
 
 export const Slave = () => {
-    const { setLastMessage, socket, setEspConnected } = useWebSocket<SensorMessage>()
+    const { setLastMessage, socket, setEspConnected, lastMessage } = useWebSocket<SensorMessage>()
     useEffect(() => {
         const handler = (e: MessageEvent) => {
             if (!socket) return
@@ -32,10 +32,10 @@ export const Slave = () => {
                     toaster.espDisconnected()
                     break
                 case "publish":
-                    setLastMessage(msg.message as SensorMessage)
+                    setLastMessage((prev) => ({ ...prev, ...msg.message }) as SensorMessage)
                     break;
                 case "error":
-                
+
                     toast.error(msg.message as string)
                     break;
                 case "info":
