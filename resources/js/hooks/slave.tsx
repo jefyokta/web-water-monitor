@@ -28,6 +28,10 @@ export const Slave = () => {
                     setEspConnected(msg.message.status)
                     break;
                 case "esp_exit":
+                    if (msg.message.esp_count > 0) {
+                        return
+                        
+                    }
                     setEspConnected(false)
                     toaster.espDisconnected()
                     break

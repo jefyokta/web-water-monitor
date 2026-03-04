@@ -22,7 +22,8 @@ class Telegram
         "/ph",
         "/ultrasonic",
         "/temperature",
-        "/tds"
+        "/tds",
+        "/all"
     ];
 
     public static function store(Request $request, Response $response)
@@ -124,30 +125,52 @@ class Telegram
         }
     }
 
-    public static function assert($message, $data)
-    {
-        $res = "unknown command `$message`\n available command \n" . implode("\n", self::$commands);
-        if (empty($data)) {
-            return "esp never give any data";
-        }
-        switch ($message) {
-            case self::$commands[0]:
-                $res = $data["ph"] ?? "";
-                break;
-            case self::$commands[1]:
-                $res = $data["deep"] ?? "";
-                break;
-            case self::$commands[2]:
-                $res = $data["temp"] ?? "";
-                break;
-            case self::$commands[3]:
-                $res = $data["tds"] ?? "";
-                break;
-
-            default:
-                break;
-        }
-
-        return $res;
+public static function assert($message, $data)
+{
+    if (empty($data)) {
+        return "⚠️ ESP belum pernah mengirim data.";
     }
+
+    $ph   = $data["ph"] ?? "-";
+    $deep = $data["deep"] ?? "-";
+    $temp = $data["temp"] ?? "-";
+    $tds  = $data["tds"] ?? "-";
+    $time = $data["updated_at"] ?? "-";
+
+    switch ($message) {
+
+        case "/ph":
+            return "🧪 *PH AIR*\n"
+                . "Nilai: *{$ph}*\n"
+                . "Terakhir update: {$time}";
+
+        case "/ultrasonic":
+            return "📏 *KETINGGIAN AIR*\n"
+                . "Jarak: *{$deep} cm*\n"
+                . "Terakhir update: {$time}";
+
+        case "/temperature":
+            return "🌡 *SUHU AIR*\n"
+                . "Suhu: *{$temp} °C*\n"
+                . "Terakhir update: {$time}";
+
+        case "/tds":
+            return "💧 *TDS AIR*\n"
+                . "Nilai: *{$tds} ppm*\n"
+                . "Terakhir update: {$time}";
+
+        case "/all":
+            return "📊 *DATA SENSOR TERBARU*\n\n"
+                . "🧪 PH        : *{$ph}*\n"
+                . "📏 Ketinggian: *{$deep} cm*\n"
+                . "🌡 Suhu      : *{$temp} °C*\n"
+                . "💧 TDS       : *{$tds} ppm*\n\n"
+                . "⏱ Update terakhir:\n{$time}";
+
+        default:
+            return "❌ Perintah tidak dikenal.\n\n"
+                . "Gunakan salah satu:\n"
+                . implode("\n", self::$commands);
+    }
+}
 };

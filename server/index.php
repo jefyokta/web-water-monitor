@@ -113,7 +113,6 @@ $app->post("/esp", [Esp32::class, "store"]);
 
 $app->gate(function ($serv, $request) {
     if (@$request->has("token") && @$request->get("token") == "secret") {
-        echo "esp join";
         SupportTable::add($request->fd, ["is_esp" => true]);
         $serv->reply("mw ip");
         $serv
@@ -123,9 +122,10 @@ $app->gate(function ($serv, $request) {
 });
 
 $app->ws("esp_status", function ($serv, $client) {
-    $espAvailable = SupportTable::getTable()->count() > 0;
-    $esphst = Preference::get("espHost") ?? null;
-    $serv->reply(["event" => "esp_status", "message" => ["status" => $espAvailable, "esp_host" => $esphst]]);
+    $espAvailable =SupportTable::getTable()->count() > 0;;
+
+
+    $serv->reply(["event" => "esp_status", "message" => ["status" => $espAvailable, "esp_host" => ""]]);
 });
 
 $app->ws("ip", function ($serv, $client) {
@@ -133,6 +133,7 @@ $app->ws("ip", function ($serv, $client) {
         Preference::set("espHost", $client->data['message']['ip']);
         Preference::set("kVal", $client->data["message"]['tds_cal']);
         Preference::set("calibration", $client->data["message"]['ph_cal']);
+        
         $serv
             ->toChannel(Consumer::class)
             ->broadcast(json_encode([
@@ -211,11 +212,12 @@ $app->ws("publish", function ($serv, $client) {
 });
 
 $app->exit(function ($serv, $fd) {
-    if (SupportTable::get($fd)) {
+    if ($esp = SupportTable::get($fd)) {
         SupportTable::remove($fd);
+        Console::info("Esp Exit $fd");
         $serv
             ->toChannel(Consumer::class)
-            ->broadcast(json_encode(["event" => "esp_exit"]));
+            ->broadcast(json_encode(["event" => "esp_exit","message"=>["esp_count"=>SupportTable::getTable()->count()]]));
     }
 });
 

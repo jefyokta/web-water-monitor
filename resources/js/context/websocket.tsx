@@ -18,7 +18,7 @@ export interface IWebSocketContext<T> {
 
 }
 
-export const WebSocketContext = createContext<IWebSocketContext<any>>(null);
+export const WebSocketContext = createContext<IWebSocketContext<any> | null>(null);
 
 interface Props {
   url: string;

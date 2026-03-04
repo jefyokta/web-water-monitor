@@ -25,7 +25,7 @@ export const OverviewSection = () => {
         if (!lastMessage?.message) return
 
         setDis((prev) => {
-            const updated = [...prev.slice(-10), { value: lastMessage.message.deep, time: 'now' }];
+            const updated = [...prev.slice(-10), { value: lastMessage!.message!.deep, time: 'now' }];
             const res = updated.map((item, index, arr) => ({
                 ...item,
                 time: index === arr.length - 1 ? 'now' : `${(arr.length - 1 - index) * 2}s ago`
@@ -35,7 +35,7 @@ export const OverviewSection = () => {
         });
 
         setPh((prev) => {
-            const updated = [...prev.slice(-10), { value: lastMessage.message.ph, time: 'now' }];
+            const updated = [...prev.slice(-10), { value: lastMessage!.message!.ph, time: 'now' }];
             return updated.map((item, index, arr) => ({
                 ...item,
                 time: index === arr.length - 1 ? 'now' : `${(arr.length - 1 - index) * 2}s ago`
@@ -43,7 +43,7 @@ export const OverviewSection = () => {
         });
 
         setTds((prev) => {
-            const updated = [...prev.slice(-10), { value: lastMessage.message.tds, time: 'now' }];
+            const updated = [...prev.slice(-10), { value: lastMessage!.message!.tds, time: 'now' }];
             return updated.map((item, index, arr) => ({
                 ...item,
                 time: index === arr.length - 1 ? 'now' : `${(arr.length - 1 - index) * 2}s ago`
@@ -51,7 +51,7 @@ export const OverviewSection = () => {
         });
 
         setTemp((prev) => {
-            const updated = [...prev.slice(-10), { value: lastMessage.message.temp, time: 'now' }];
+            const updated = [...prev.slice(-10), { value: lastMessage!.message!.temp, time: 'now' }];
             return updated.map((item, index, arr) => ({
                 ...item,
                 time: index === arr.length - 1 ? 'now' : `${(arr.length - 1 - index) * 2}s ago`
@@ -128,9 +128,15 @@ export const OverviewSection = () => {
                     </p>
                 </div>
                 <ul>
+                    {/* @ts-ignore */}
                     <List valueBefore={(() => ph.at(-2)?.value || 0)()} name="PH" value={(() => ph.at(-1)?.value || 0)()} unit="pH" />
+                    {/* @ts-ignore */}
+
                     <List valueBefore={(() => dis.at(-2)?.value || 0)()} name="Deep" value={(() => dis.at(-1)?.value || 0)()} unit="cm" />
+                    {/* @ts-ignore */}
+
                     <List valueBefore={(() => tds.at(-2)?.value || 0)()} name="Dissolved Solid" value={(() => tds.at(-1)?.value || 0)()} unit="ppm" />
+                    {/* @ts-ignore */}
                     <List valueBefore={(() => temp.at(-2)?.value || 0)()} name="Temperature" value={(() => temp.at(-1)?.value || 0)()} unit="c" />
                 </ul>
                 <div className="flex justify-end px-2">
